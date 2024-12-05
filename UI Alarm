@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shift Kerja & Jadwal Senam - SEIREN CO., LTD.</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #F5F5F5;
+            color: #333;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            background-color: #00509E;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        header .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .menu {
+            display: none;
+            flex-direction: column;
+            background-color: #00509E;
+            padding: 10px;
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            border-radius: 8px;
+            width: 200px;
+        }
+
+        .menu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .menu a:hover {
+            background-color: #00796B;
+        }
+
+        .hamburger {
+            cursor: pointer;
+            font-size: 30px;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .hamburger.active {
+            transform: rotate(90deg);
+        }
+
+        .hamburger.active:before {
+            content: '✖'; /* Change the hamburger to X when menu is open */
+        }
+
+        .hamburger:before {
+            content: '☰'; /* Hamburger icon */
+        }
+
+        .hamburger.active + .menu {
+            display: flex;
+        }
+
+        main {
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            opacity: 0;
+            animation: slideIn 1s ease-in-out forwards;
+            margin-top: 20px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            color: #00509E;
+            text-align: center;
+        }
+
+        section {
+            display: none;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        section.visible {
+            display: block;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .shift-container {
+            margin-bottom: 20px;
+            border-radius: 8px;
+            padding: 10px;
+            background-color: #f4f4f4;
+        }
+
+        .shift-button {
+            background-color: #009688;
+            color: white;
+            padding: 15px;
+            margin: 5px 0;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .shift-button:hover {
+            background-color: #00796B;
+            transform: scale(1.05);
+        }
+
+        .shift-button:focus {
+            outline: none;
+            border: 2px solid #00796B;
+        }
+
+        .delete-btn {
+            background-color: #FF4C4C;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .delete-btn:hover {
+            background-color: #D32F2F;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #00509E;
+            color: white;
+            margin-top: 40px;
+        }
+
+        /* Animasi Rolling Tabel */
+        .shift-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            overflow: hidden;
+            transform: rotateX(-90deg);
+            transition: transform 0.5s ease-in-out, max-height 0.5s ease-out;
+            max-height: 0;
+        }
+
+        .shift-table.show {
+            transform: rotateX(0); /* Unroll effect */
+            max-height: 500px;
+        }
+
+        .shift-table td, .shift-table th {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .ip-address-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        .ip-address-table th, .ip-address-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .ip-address-table th {
+            background-color: #00509E;
+            color: white;
+        }
+
+        .add-shift-table {
+            margin-top: 30px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .add-shift-table th, .add-shift-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .add-shift-table th {
+            background-color: #00509E;
+            color: white;
+        }
+
+        .add-shift-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="c:\Users\LENOVO\OneDrive\Dokumen\Alarm Website App\Logo Seiren.webp" alt="Logo SEIREN CO., LTD.">
+            <h1>Shift Kerja & Jadwal Senam</h1>
+        </div>
+        <div class="hamburger" onclick="toggleMenu()"></div>
+        <div class="menu">
+            <a href="#" onclick="showSection('shift-section')">Shift Kerja</a>
+            <a href="#" onclick="showSection('exercise-section')">Jadwal Senam</a>
+            <a href="#" onclick="showSection('add-shift-section')">Tambah Shift</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="shift-section" class="visible">
+            <h2>Pengaturan Jadwal Shift</h2>
+            <div id="shift-list">
+                <!-- Jadwal Shift Kerja -->
+                <div class="shift-container">
+                    <button class="shift-button" onclick="toggleShift('shiftPagi1')">Shift Pagi 1 (07:00 - 16:00)</button>
+                    <table class="shift-table" id="shiftPagi1">
+                        <thead>
+                            <tr>
+                                <th>Hari</th>
+                                <th>Masuk</th>
+                                <th>Istirahat</th>
+                                <th>Masuk Istirahat</th>
+                                <th>Pulang</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Senin</td>
+                                <td><input type="time" value="07:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="12:30"></td>
+                                <td><input type="time" value="16:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Selasa</td>
+                                <td><input type="time" value="07:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="16:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Rabu</td>
+                                <td><input type="time" value="07:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="16:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Kamis</td>
+                                <td><input type="time" value="07:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="16:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Jumat</td>
+                                <td><input type="time" value="07:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="16:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Sabtu</td>
+                                <td><input type="time" value="07:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="16:00"></td>
+                            </tr>
+
+                            <button class="delete-btn" onclick="deleteShift('shiftPagi1')">Delete Shift</button>
+                        </tbody>
+                    </table>
+                    
+                </div>
+
+                <div class="shift-container">
+                    <button class="shift-button" onclick="toggleShift('shiftPagi2')">Shift Pagi 2 (08:00 - 17:00)</button>
+                    <table class="shift-table" id="shiftPagi2">
+                        <thead>
+                            <tr>
+                                <th>Hari</th>
+                                <th>Masuk</th>
+                                <th>Istirahat</th>
+                                <th>Masuk Istirahat</th>
+                                <th>Pulang</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Senin</td>
+                                <td><input type="time" value="08:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="17:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Selasa</td>
+                                <td><input type="time" value="08:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="17:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Rabu</td>
+                                <td><input type="time" value="08:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="17:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Kamis</td>
+                                <td><input type="time" value="08:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="17:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Jumat</td>
+                                <td><input type="time" value="08:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="17:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Sabtu</td>
+                                <td><input type="time" value="08:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="17:00"></td>
+                            </tr>
+
+                            <button class="delete-btn" onclick="deleteShift('shiftPagi2')">Delete Shift</button>
+                        </tbody>
+                    </table>
+                </div>
+                
+                            
+                
+                <div class="shift-container">
+                    <button class="shift-button" onclick="toggleShift('shiftSiang')">Shift Siang (14:00 - 22:00)</button>
+                    <table class="shift-table" id="shiftSiang">
+                        <thead>
+                            <tr>
+                                <th>Hari</th>
+                                <th>Masuk</th>
+                                <th>Istirahat</th>
+                                <th>Masuk Istirahat</th>
+                                <th>Pulang</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Senin</td>
+                                <td><input type="time" value="14:00"></td>
+                                <td><input type="time" value="18:00"></td>
+                                <td><input type="time" value="19:00"></td>
+                                <td><input type="time" value="22:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Selasa</td>
+                                <td><input type="time" value="14:00"></td>
+                                <td><input type="time" value="18:00"></td>
+                                <td><input type="time" value="19:00"></td>
+                                <td><input type="time" value="22:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Rabu</td>
+                                <td><input type="time" value="14:00"></td>
+                                <td><input type="time" value="18:00"></td>
+                                <td><input type="time" value="19:00"></td>
+                                <td><input type="time" value="22:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Kamis</td>
+                                <td><input type="time" value="14:00"></td>
+                                <td><input type="time" value="18:00"></td>
+                                <td><input type="time" value="19:00"></td>
+                                <td><input type="time" value="22:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Jumat</td>
+                                <td><input type="time" value="14:00"></td>
+                                <td><input type="time" value="18:00"></td>
+                                <td><input type="time" value="19:00"></td>
+                                <td><input type="time" value="22:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Sabtu</td>
+                                <td><input type="time" value="14:00"></td>
+                                <td><input type="time" value="18:00"></td>
+                                <td><input type="time" value="19:00"></td>
+                                <td><input type="time" value="22:00"></td>
+                            </tr>
+
+                            <button class="delete-btn" onclick="deleteShift('shiftSiang')">Delete Shift</button>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="shift-container">
+                    <button class="shift-button" onclick="toggleShift('shiftMalam')">Shift Malam (08:00 - 17:00)</button>
+                    <table class="shift-table" id="shiftMalam">
+                        <thead>
+                            <tr>
+                                <th>Hari</th>
+                                <th>Masuk</th>
+                                <th>Istirahat</th>
+                                <th>Masuk Istirahat</th>
+                                <th>Pulang</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Senin</td>
+                                <td><input type="time" value="23:00"></td>
+                                <td><input type="time" value="03:00"></td>
+                                <td><input type="time" value="04:00"></td>
+                                <td><input type="time" value="07:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Selasa</td>
+                                <td><input type="time" value="23:00"></td>
+                                <td><input type="time" value="03:00"></td>
+                                <td><input type="time" value="04:00"></td>
+                                <td><input type="time" value="07:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Rabu</td>
+                                <td><input type="time" value="23:00"></td>
+                                <td><input type="time" value="03:00"></td>
+                                <td><input type="time" value="04:00"></td>
+                                <td><input type="time" value="07:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Kamis</td>
+                                <td><input type="time" value="23:00"></td>
+                                <td><input type="time" value="03:00"></td>
+                                <td><input type="time" value="04:00"></td>
+                                <td><input type="time" value="07:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Jumat</td>
+                                <td><input type="time" value="23:00"></td>
+                                <td><input type="time" value="03:00"></td>
+                                <td><input type="time" value="04:00"></td>
+                                <td><input type="time" value="07:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Sabtu</td>
+                                <td><input type="time" value="23:00"></td>
+                                <td><input type="time" value="03:00"></td>
+                                <td><input type="time" value="04:00"></td>
+                                <td><input type="time" value="07:00"></td>
+                            </tr>
+
+                            <button class="delete-btn" onclick="deleteShift('shiftMalam')">Delete Shift</button>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="shift-container">
+                    <button class="shift-button" onclick="toggleShift('nonShift')">Non Shift (08:00 - 17:00)</button>
+                    <table class="shift-table" id="nonShift">
+                        <thead>
+                            <tr>
+                                <th>Hari</th>
+                                <th>Masuk</th>
+                                <th>Istirahat</th>
+                                <th>Masuk Istirahat</th>
+                                <th>Pulang</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Senin</td>
+                                <td><input type="time" value="08:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="17:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Selasa</td>
+                                <td><input type="time" value="08:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="17:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Rabu</td>
+                                <td><input type="time" value="08:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="17:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Kamis</td>
+                                <td><input type="time" value="08:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="17:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Jumat</td>
+                                <td><input type="time" value="08:00"></td>
+                                <td><input type="time" value="12:00"></td>
+                                <td><input type="time" value="13:00"></td>
+                                <td><input type="time" value="17:00"></td>
+                            </tr>
+
+                            <button class="delete-btn" onclick="deleteShift('nonShift')">Delete Shift</button>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="exercise-section">
+            <h2>Pengaturan Jadwal Senam</h2>
+            <div id="exercise-list">
+                <div class="shift-container">
+                    <button class="shift-button" onclick="toggleShift('senamPagi')">Senam Pagi (06:00 - 07:00)</button>
+                    <table class="shift-table" id="senamPagi">
+                        <thead>
+                            <tr>
+                                <th>Hari</th>
+                                <th>Waktu Mulai</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Senin</td>
+                                <td><input type="time" value="07:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Selasa</td>
+                                <td><input type="time" value="07:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Rabu</td>
+                                <td><input type="time" value="07:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Kamis</td>
+                                <td><input type="time" value="07:00"></td>
+                            </tr>
+
+                            <tr>
+                                <td>Jumat</td>
+                                <td><input type="time" value="07:00"></td>
+                            </tr>
+
+                            <button class="delete-btn" onclick="deleteShift('senamPagi')">Delete Senam</button>
+                        </tbody>
+                    </table>
+                   
+                </div>
+            </div>
+        </section>
+
+        <section id="add-shift-section">
+            <h2>Tambah Shift Baru</h2>
+            <div class="add-shift-form">
+                <label for="shift-name">Nama Shift:</label>
+                <input type="text" id="shift-name" placeholder="Nama Shift" />
+                <label for="shift-time">Jam Mulai:</label>
+                <input type="time" id="shift-time" />
+                <label for="shift-end-time">Jam Selesai:</label>
+                <input type="time" id="shift-end-time" />
+                <button onclick="addShift()">Tambah Shift</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        &copy; 2024 CV Cahaya Fatih., LTD. All Rights Reserved.
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.querySelector('.hamburger').classList.toggle('active');
+            document.querySelector('.menu').classList.toggle('active');
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.remove('visible');
+                section.classList.add('hidden');
+            });
+            const section = document.getElementById(sectionId);
+            section.classList.remove('hidden');
+            section.classList.add('visible');
+        }
+
+        function toggleShift(shiftId) {
+            const table = document.getElementById(shiftId);
+            table.classList.toggle('show');  // Apply rolling effect (slide open/close)
+        }
+
+        async function deleteShift(shiftId) {
+            const table = document.getElementById(shiftId);
+            table.style.display = 'none';  // Hide the table immediately after deletion
+        }
+
+        async function addShift() {
+            const name = document.getElementById('shift-name').value;
+            const time = document.getElementById('shift-time').value;
+            const endTime = document.getElementById('shift-end-time').value;
+            const response = await fetch('/add-schedule', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, time, endTime })
+            });
+            if (response.ok) {
+                alert("Shift berhasil ditambahkan");
+                loadSchedules();
+            }
+        }
+
+        async function loadSchedules() {
+            const response = await fetch('/get-schedules');
+            const schedules = await response.json();
+            const table = document.getElementById("shift-table");
+            table.innerHTML = "";
+            schedules.forEach((schedule, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${schedule.name}</td><td>${schedule.hour}:${schedule.minute}</td><td><button onclick="deleteSchedule(${index})">Delete</button></td>`;
+                table.appendChild(row);
+            });
+        }
+
+        async function deleteSchedule(index) {
+            const response = await fetch(`/delete-schedule?index=${index}`);
+            if (response.ok) {
+                alert("Schedule deleted!");
+                loadSchedules();
+            }
+        }
+
+        window.onload = loadSchedules;
+    </script>
+</body>
+</html>
